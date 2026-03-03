@@ -442,7 +442,7 @@ const bindSlotTS0601SmartSceneKnob = async (entity: Zh.Endpoint | Zh.Group, slot
     await tuya.sendDataPointRaw(entity as Zh.Endpoint, 102, payload, "dataRequest", 0x10 + (slot - 1));
 };
 
-const trv603ScheduleConverter = (dayNumber: number) => {
+const ar331wzScheduleConverter = (dayNumber: number) => {
     return {
         from: (value: unknown) => {
             const buf = Buffer.isBuffer(value)
@@ -3980,8 +3980,8 @@ export const definitions: DefinitionWithExtend[] = [
         ],
     },
     {
-        fingerprint: tuya.fingerprint("TS0601", ["_TZE284_noixx2uz"]),
-        model: "TRV603",
+        fingerprint: tuya.fingerprint("TS0601", ["_TZE284_noixx2uz", "_TZE284_nbv4tdaz"]),
+        model: "AR331-WZ",
         vendor: "Tuya",
         description: "Thermostatic Radiator Valve",
         extend: [tuya.modernExtend.tuyaBase({dp: true, timeStart: "1970"})],
@@ -3990,7 +3990,7 @@ export const definitions: DefinitionWithExtend[] = [
             e.child_lock(),
             e
                 .climate()
-                .withPreset(["auto", "manual", "leave"])
+                .withPreset(["auto", "manual", "leave", "comfort", "eco", "off"])
                 .withSetpoint("current_heating_setpoint", 5, 40, 0.5, ea.STATE_SET)
                 .withLocalTemperature(ea.STATE)
                 .withSystemMode(["heat"], ea.STATE)
@@ -3999,7 +3999,8 @@ export const definitions: DefinitionWithExtend[] = [
         ],
         meta: {
             tuyaDatapoints: [
-                [2, "preset", tuya.valueConverterBasic.lookup({auto: tuya.enum(0), manual: tuya.enum(1), leave: tuya.enum(2)})],
+                // NOTE: 'provisional mode' (manual setpoint override in auto) also reports DP2=2, indistinguishable from leave
+                [2, "preset", tuya.valueConverterBasic.lookup({auto: tuya.enum(0), manual: tuya.enum(1), leave: tuya.enum(2), comfort: tuya.enum(3), eco: tuya.enum(4), off: tuya.enum(5)})],
                 [3, "running_state", tuya.valueConverterBasic.lookup({idle: tuya.enum(0), heat: tuya.enum(1)})],
                 [
                     4,
@@ -4010,7 +4011,10 @@ export const definitions: DefinitionWithExtend[] = [
                             const currentPreset = meta.state.preset as string;
                             let newValue = value;
                             if (newValue < 5) newValue = 5;
-                            if (currentPreset === "leave" && newValue > 15) newValue = 15;
+                            if (newValue > 40) newValue = 40;
+                            if (currentPreset === "leave"   && newValue > 15)   newValue = 15;
+                            if (currentPreset === "eco"     && newValue > 18)   newValue = 18;
+                            if (currentPreset === "comfort" && newValue < 18.5) newValue = 18.5;
                             return Math.round(newValue * 10);
                         },
                     },
@@ -4025,13 +4029,13 @@ export const definitions: DefinitionWithExtend[] = [
                 ],
                 [6, "battery", tuya.valueConverter.raw],
                 [7, "child_lock", tuya.valueConverterBasic.lookup({LOCK: false, UNLOCK: true})],
-                [28, "schedule_monday", trv603ScheduleConverter(1)],
-                [29, "schedule_tuesday", trv603ScheduleConverter(2)],
-                [30, "schedule_wednesday", trv603ScheduleConverter(3)],
-                [31, "schedule_thursday", trv603ScheduleConverter(4)],
-                [32, "schedule_friday", trv603ScheduleConverter(5)],
-                [33, "schedule_saturday", trv603ScheduleConverter(6)],
-                [34, "schedule_sunday", trv603ScheduleConverter(7)],
+                [28, "schedule_monday", ar331wzScheduleConverter(1)],
+                [29, "schedule_tuesday", ar331wzScheduleConverter(2)],
+                [30, "schedule_wednesday", ar331wzScheduleConverter(3)],
+                [31, "schedule_thursday", ar331wzScheduleConverter(4)],
+                [32, "schedule_friday", ar331wzScheduleConverter(5)],
+                [33, "schedule_saturday", ar331wzScheduleConverter(6)],
+                [34, "schedule_sunday", ar331wzScheduleConverter(7)],
             ],
         },
     },
