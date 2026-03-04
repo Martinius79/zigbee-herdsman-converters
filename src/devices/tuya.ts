@@ -442,7 +442,7 @@ const bindSlotTS0601SmartSceneKnob = async (entity: Zh.Endpoint | Zh.Group, slot
     await tuya.sendDataPointRaw(entity as Zh.Endpoint, 102, payload, "dataRequest", 0x10 + (slot - 1));
 };
 
-const ar331wzScheduleConverter = (dayNumber: number) => {
+const ar331ScheduleConverter = (dayNumber: number) => {
     return {
         from: (value: unknown) => {
             const buf = Buffer.isBuffer(value)
@@ -3980,7 +3980,63 @@ export const definitions: DefinitionWithExtend[] = [
         ],
     },
     {
-        fingerprint: tuya.fingerprint("TS0601", ["_TZE284_noixx2uz", "_TZE284_nbv4tdaz"]),
+        fingerprint: tuya.fingerprint("TS0601", ["_TZE284_noixx2uz"]),
+        model: "AR331",
+        vendor: "Tuya",
+        description: "Thermostatic Radiator Valve",
+        extend: [tuya.modernExtend.tuyaBase({dp: true, timeStart: "1970"})],
+        exposes: [
+            e.battery().withUnit("%"),
+            e.child_lock(),
+            e
+                .climate()
+                .withPreset(["auto", "manual", "leave"])
+                .withSetpoint("current_heating_setpoint", 5, 40, 0.5, ea.STATE_SET)
+                .withLocalTemperature(ea.STATE)
+                .withRunningState(["idle", "heat"], ea.STATE),
+            ...tuya.exposes.scheduleAllDays(ea.STATE_SET, "HH:MM/C HH:MM/C HH:MM/C HH:MM/C"),
+        ],
+        meta: {
+            tuyaDatapoints: [
+                [2, "preset", tuya.valueConverterBasic.lookup({auto: tuya.enum(0), manual: tuya.enum(1), leave: tuya.enum(2)})],
+                [3, "running_state", tuya.valueConverterBasic.lookup({idle: tuya.enum(0), heat: tuya.enum(1)})],
+                [
+                    4,
+                    "current_heating_setpoint",
+                    {
+                        from: (value: number) => value / 10,
+                        to: (value: number, meta: Tz.Meta) => {
+                            const currentPreset = meta.state.preset as string;
+                            let newValue = value;
+                            if (newValue < 5) newValue = 5;
+                            if (newValue > 40) newValue = 40;
+                            if (currentPreset === "leave" && newValue > 15) newValue = 15;
+                            return Math.round(newValue * 10);
+                        },
+                    },
+                ],
+                [
+                    5,
+                    "local_temperature",
+                    {
+                        from: (value: number) => (value > 32767 ? value - 65536 : value) / 10,
+                        to: (value: number) => Math.round(value * 10),
+                    },
+                ],
+                [6, "battery", tuya.valueConverter.raw],
+                [7, "child_lock", tuya.valueConverterBasic.lookup({LOCK: false, UNLOCK: true})],
+                [28, "schedule_monday", ar331ScheduleConverter(1)],
+                [29, "schedule_tuesday", ar331ScheduleConverter(2)],
+                [30, "schedule_wednesday", ar331ScheduleConverter(3)],
+                [31, "schedule_thursday", ar331ScheduleConverter(4)],
+                [32, "schedule_friday", ar331ScheduleConverter(5)],
+                [33, "schedule_saturday", ar331ScheduleConverter(6)],
+                [34, "schedule_sunday", ar331ScheduleConverter(7)],
+            ],
+        },
+    },
+    {
+        fingerprint: tuya.fingerprint("TS0601", ["_TZE284_nbv4tdaz"]),
         model: "AR331-WZ",
         vendor: "Tuya",
         description: "Thermostatic Radiator Valve",
@@ -3993,7 +4049,6 @@ export const definitions: DefinitionWithExtend[] = [
                 .withPreset(["auto", "manual", "leave", "comfort", "eco", "off"])
                 .withSetpoint("current_heating_setpoint", 5, 40, 0.5, ea.STATE_SET)
                 .withLocalTemperature(ea.STATE)
-                .withSystemMode(["heat"], ea.STATE)
                 .withRunningState(["idle", "heat"], ea.STATE),
             ...tuya.exposes.scheduleAllDays(ea.STATE_SET, "HH:MM/C HH:MM/C HH:MM/C HH:MM/C"),
         ],
@@ -4029,13 +4084,13 @@ export const definitions: DefinitionWithExtend[] = [
                 ],
                 [6, "battery", tuya.valueConverter.raw],
                 [7, "child_lock", tuya.valueConverterBasic.lookup({LOCK: false, UNLOCK: true})],
-                [28, "schedule_monday", ar331wzScheduleConverter(1)],
-                [29, "schedule_tuesday", ar331wzScheduleConverter(2)],
-                [30, "schedule_wednesday", ar331wzScheduleConverter(3)],
-                [31, "schedule_thursday", ar331wzScheduleConverter(4)],
-                [32, "schedule_friday", ar331wzScheduleConverter(5)],
-                [33, "schedule_saturday", ar331wzScheduleConverter(6)],
-                [34, "schedule_sunday", ar331wzScheduleConverter(7)],
+                [28, "schedule_monday", ar331ScheduleConverter(1)],
+                [29, "schedule_tuesday", ar331ScheduleConverter(2)],
+                [30, "schedule_wednesday", ar331ScheduleConverter(3)],
+                [31, "schedule_thursday", ar331ScheduleConverter(4)],
+                [32, "schedule_friday", ar331ScheduleConverter(5)],
+                [33, "schedule_saturday", ar331ScheduleConverter(6)],
+                [34, "schedule_sunday", ar331ScheduleConverter(7)],
             ],
         },
     },
