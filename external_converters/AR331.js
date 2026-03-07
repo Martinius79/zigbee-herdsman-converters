@@ -9,7 +9,7 @@
  *   DP 3  (enum)   - running state: 0=idle, 1=heat
  *   DP 4  (uint32) - current heating setpoint (°C × 10)
  *   DP 5  (int16)  - local temperature (°C × 10, signed; two's complement above 32767)
- *   DP 6  (uint32) - battery level (%) — confirmed for AR331; not yet observed for AR331-WZ (likely same)
+ *   DP 6  (uint32) - battery level (%) — confirmed for both AR331 and AR331-WZ (100% reported)
  *   DP 7  (bool)   - child lock: false=LOCK, true=UNLOCK
  *   DP 28–34 (raw) - schedule Mon–Sun
  *
@@ -29,14 +29,16 @@
  *                     holiday preset, then tracks holiday setpoint adjustments. Observed: 10–10.5°C.
  *                     Not observed for AR331 (_TZE284_noixx2uz).
  *   DP 111 (uint32) - unknown; reported once as 0 at device startup. Possibly an error/status counter.
- *   DP 114 (raw)    - open-window max-duration setting; reported as [200, 0] (uint16 LE = 200 min).
- *                     Pairs with DP 106 (timestamps) and DP 115 (active flag).
- *   DP 115 (bool)   - open-window active flag; false=inactive, true=window open detected.
- *                     Resets to false after every preset change or window-close event.
- *   DP 106 (raw)    - open-window event timestamps; 9-byte payload [0, ts1_LE4, ts2_LE4].
- *                     Bytes 1–4 and 5–8 are Unix timestamps (LE uint32). When both are equal the
- *                     feature is idle/reset. Likely: ts1 = window-open time, ts2 = window-close time.
- *                     Example: [0,229,244,118,103,229,105,137,103] → 2025-01-02T20:19Z / 2025-01-16T20:19Z.
+ *   DP 114 (raw)    - unknown; reported as [200, 0] (uint16 LE = 200). Function unclear — may relate to
+ *                     a timer or threshold setting on the device.
+ *   DP 115 (bool)   - unknown; always reported as false. Observed after preset changes. Possibly an
+ *                     enable/disable flag for a device feature (e.g. open-window detection toggle).
+ *   DP 106 (raw)    - holiday schedule dates; 9-byte payload [0, ts_start_LE4, ts_end_LE4].
+ *                     Bytes 1–4 = holiday start, bytes 5–8 = holiday end (Unix timestamps, LE uint32).
+ *                     ts2 − ts1 is always exactly 14 days (= 1209600 s) when a holiday is programmed.
+ *                     Sentinel value [0,64,46,117,103,64,46,117,103] (ts1=ts2=2025-01-01 12:00 UTC)
+ *                     means no holiday currently scheduled.
+ *                     Reported on preset transitions (e.g. entering/leaving holiday mode).
  *
  * Schedule RAW byte format (DP 28–34):
  *   Byte[0]       = day number (1=Mon … 7=Sun)
