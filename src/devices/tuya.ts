@@ -4037,7 +4037,7 @@ export const definitions: DefinitionWithExtend[] = [
     },
     {
         fingerprint: tuya.fingerprint("TS0601", ["_TZE284_nbv4tdaz"]),
-        model: "AR331-WZ",
+        model: "AR331Pro",
         vendor: "Tuya",
         description: "Thermostatic radiator valve",
         extend: [tuya.modernExtend.tuyaBase({dp: true, timeStart: "1970"})],
