@@ -33,6 +33,11 @@
  *   DP 110 (bool)  - battery_status: battery low flag (read-only)
  *   DP 111 (value) - display_direction: screen orientation in degrees (0/90/180/270)
  *   DP 112 (enum)  - pro_mode: schedule type — 52day|7day|24hour
+ *                    Controls how the weekly program repeats:
+ *                      7day   = 7 individual day programs (Mon–Sun), repeated weekly (default)
+ *                      24hour = one program applies to all days
+ *                      52day  = one program per calendar day (requires Tuya cloud; not usable over Zigbee)
+ *                    Not exposed — changing this over Zigbee is error-prone and rarely needed.
  *   DP 113 (bool)  - switch: device on/off
  *   DP 114 (value) - override_temp: temporary manual override temperature (°C × 10)
  *   DP 115 (bool)  - overide_en: temporary manual override active
@@ -156,7 +161,7 @@ function makePresetConverter(lookupMap) {
 function setpointFrom(v, meta) {
     const keepCurrent = () => {
         const cur = meta && meta.state && meta.state.current_heating_setpoint;
-        return cur !== undefined && cur !== null ? cur : 5;
+        return (cur !== undefined && cur !== null && cur >= 5) ? cur : 5;
     };
     if (v < 50 || v > 400) return keepCurrent();
     const device = meta && meta.device;
@@ -200,13 +205,52 @@ const localTempCalibrationConverter = {
     },
 };
 
+// DP114 corrector: when the device sends an out-of-range override_temperature (e.g. a signed int16
+// underflow when the knob is turned below 5°C), write the clamped minimum back to the device.
+// Uses a 2-second debounce to avoid sending the correction twice (device echoes DP114 twice per change).
+const fzDp114Corrector = {
+    cluster: 'manuSpecificTuya',
+    type: ['commandDataReport', 'commandDataResponse'],
+    convert: (model, msg, publish, options, meta) => {
+        for (const dpValue of msg.data.dpValues) {
+            if (dpValue.dp !== 114) continue;
+            const buf = dpValue.data;
+            let raw;
+            if (dpValue.datatype === 2) {
+                raw = buf.readUInt32BE(0);
+                if (raw > 32767) raw -= 65536; // signed int16 underflow
+            } else if (dpValue.datatype === 0) {
+                if (buf.length < 2) continue;
+                raw = buf.readUInt16LE(0);
+                if (raw > 32767) raw -= 65536;
+            } else {
+                continue;
+            }
+            const temp = raw / 10;
+            if (temp < 5 || temp > 40) {
+                // Debounce: device echoes DP114 twice per change, only correct once
+                const now = Date.now();
+                const lastCorrection = globalStore.getValue(msg.device, 'dp114CorrectionTime', 0);
+                if (now - lastCorrection < 2000) continue;
+                globalStore.putValue(msg.device, 'dp114CorrectionTime', now);
+                const corrected = Math.round(Math.max(5, Math.min(40, temp)) * 10);
+                msg.endpoint.command(
+                    'manuSpecificTuya', 'dataRequest',
+                    {seq: 1, dpValues: [{dp: 114, datatype: 2, data: corrected}]},
+                    {disableDefaultResponse: true},
+                ).catch(() => {});
+            }
+        }
+    },
+};
+
 // AR331 Pro (_TZE284_nbv4tdaz): 6 presets, 8 schedule timeslots/day, boost, frost protection, etc.
 const ar331pro = {
     fingerprint: [{modelID: "TS0601", manufacturerName: "_TZE284_nbv4tdaz"}],
     model: "AR331Pro",
     vendor: "Tuya",
-    description: "Thermostatic Radiator Valve",
-    fromZigbee: [tuya.fz.datapoints],
+    description: "Thermostatic radiator valve",
+    fromZigbee: [tuya.fz.datapoints, fzDp114Corrector],
     toZigbee: [tuya.tz.datapoints],
     onEvent: tuya.onEventSetTime,
     exposes: [
@@ -218,9 +262,11 @@ const ar331pro = {
             .withPreset(["auto", "manual", "holiday", "comfort", "eco", "standby"], ea.STATE_SET)
             .withSetpoint("current_heating_setpoint", 5, 40, 0.5, ea.STATE_SET)
             .withLocalTemperature(ea.STATE)
-            .withLocalTemperatureCalibration(-10, 10, 0.1, ea.STATE_SET)
-            .withRunningState(["idle", "heat"], ea.STATE)
-            .withSystemMode(["heat", "cool", "off"], ea.STATE_SET),
+            .withLocalTemperatureCalibration(-7, 7, 0.5, ea.STATE_SET)
+            .withRunningState(["idle", "heat"], ea.STATE),
+        // Power switch (summer/off mode)
+        e.binary("switch", ea.STATE_SET, "ON", "OFF").withDescription("Turn the device on or off (summer mode)"),
+        e.enum("heating_cooling_mode", ea.STATE_SET, ["heat", "cool"]).withDescription("Heating or cooling mode - In cooling mode valve is closed, works as temperature and window/door sensor"),
         // Temperature limits
         e.numeric("upper_temp", ea.STATE_SET).withUnit("°C").withDescription("Upper temperature limit").withValueMin(28).withValueMax(40).withValueStep(0.5),
         e.numeric("lower_temp", ea.STATE_SET).withUnit("°C").withDescription("Lower temperature limit").withValueMin(5).withValueMax(20).withValueStep(0.5),
@@ -247,8 +293,7 @@ const ar331pro = {
         // Display
         e.enum("screen_orientation", ea.STATE_SET, ["up", "right", "down", "left"]).withDescription("Display orientation"),
         e.numeric("display_brightness", ea.STATE_SET).withDescription("Display brightness (1–7)").withValueMin(1).withValueMax(7).withValueStep(1),
-        // Schedule mode
-        e.enum("schedule_mode", ea.STATE_SET, ["52day", "7day", "24hour"]).withDescription("Schedule program type"),
+        // Schedule mode (DP 112) intentionally not exposed — see header comment.
         // Override (temporary manual setpoint)
         e.binary("override_active", ea.STATE_SET, "ON", "OFF").withDescription("Temporary manual override active"),
         e.numeric("override_temperature", ea.STATE_SET).withUnit("°C").withDescription("Temporary manual override temperature").withValueMin(5).withValueMax(40).withValueStep(0.5),
@@ -262,7 +307,7 @@ const ar331pro = {
             [4, "current_heating_setpoint", setpointConverter],
             [5, "local_temperature", {from: (v) => (v > 32767 ? v - 65536 : v) / 10}],
             [6, "battery", tuya.valueConverter.raw],
-            [7, "child_lock", tuya.valueConverterBasic.lookup({LOCK: true, UNLOCK: false})],
+            [7, "child_lock", tuya.valueConverterBasic.lookup({LOCK: false, UNLOCK: true})],
             [9, "upper_temp", tuya.valueConverter.divideBy10],
             [10, "lower_temp", tuya.valueConverter.divideBy10],
             [14, "window_detection", tuya.valueConverter.onOff],
@@ -283,13 +328,33 @@ const ar331pro = {
             [107, "frost_protection_temperature", tuya.valueConverter.divideBy10],
             // DP 108 window_stoptime: min open duration in seconds, expose as minutes
             [108, "window_close_delay", {from: (v) => Math.round(v / 60), to: (v) => Math.round(v) * 60}],
-            [109, "system_mode", tuya.valueConverterBasic.lookup({heat: false, cool: true})],
+            [109, "heating_cooling_mode", tuya.valueConverterBasic.lookup({heat: false, cool: true})],
             [110, "battery_status", tuya.valueConverter.raw],
             // DP 111: screen orientation in degrees (plain uint32, NOT Tuya enum)
             [111, "screen_orientation", tuya.valueConverterBasic.lookup({up: 0, right: 90, down: 180, left: 270})],
-            [112, "schedule_mode", tuya.valueConverterBasic.lookup({"52day": tuya.enum(0), "7day": tuya.enum(1), "24hour": tuya.enum(2)})],
-            [113, "system_mode", {from: (v) => (v ? null : "off"), to: (v) => v !== "off"}],
-            [114, "override_temperature", tuya.valueConverter.divideBy10],
+            // DP 112 pro_mode intentionally not mapped — see header comment.
+            [113, "switch", tuya.valueConverter.onOff],
+            // DP 114: device echoes the value twice — first as uint32 BE (datatype=2), then as
+            // 2-byte little-endian raw buffer (datatype=0). Values below 0°C arrive as signed
+            // int16 underflow (e.g. knob turned below minimum → 0xFFD3 = -4.5°C).
+            // Decoded signed, then clamped. fzDp114Corrector writes the clamped value back.
+            [114, "override_temperature", {
+                from: (v) => {
+                    let raw;
+                    if (Buffer.isBuffer(v)) {
+                        if (v.length < 2) return null;
+                        raw = v.readUInt16LE(0);
+                    } else {
+                        raw = v;
+                    }
+                    if (raw > 32767) raw -= 65536; // signed int16 underflow
+                    const temp = raw / 10;
+                    return Math.max(5, Math.min(40, temp));
+                },
+                to: (v) => Math.round(v * 10),
+            }],
+            // DP 115: override_active is effectively read-only — the device ignores external write commands.
+            // To clear the override remotely, cycle the preset: send preset=manual then preset=auto (2 s apart).
             [115, "override_active", tuya.valueConverter.onOff],
             // Weekly schedule: 8 timeslots per day, 33-byte raw payload
             [28, "schedule_monday", scheduleConverter(1)],
