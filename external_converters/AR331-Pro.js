@@ -3,20 +3,20 @@
  * Device fingerprint: TS0601 / _TZE284_nbv4tdaz
  *
  * Full DP map (confirmed via Tuya Cloud API "query properties"):
- *   DP  1  (bool)  - preheat (boost_heating alias)
+ *   DP  1  (bool)  - preheat: read-only status bit; true while boost heating (DP101) is active
  *   DP  2  (enum)  - mode/preset: auto|manual|holiday|eco|comfort|standby
  *   DP  3  (enum)  - work_state: opened|closed (valve/running state)
  *   DP  4  (value) - temp_set: target temperature (°C × 10, 50–400)
  *   DP  5  (value) - temp_current: local temperature (°C × 10, signed)
  *   DP  6  (value) - battery_percentage (0–100)
  *   DP  7  (bool)  - child_lock: true=LOCK, false=UNLOCK
- *   DP  9  (value) - upper_temp: upper temperature limit (°C × 10, 280–400)
- *   DP 10  (value) - lower_temp: lower temperature limit (°C × 10, 50–200)
+ *   DP  9  (value) - upper_temp: upper temperature limit (°C × 10, 280–400) — stored but NOT enforced by device
+ *   DP 10  (value) - lower_temp: lower temperature limit (°C × 10, 50–200) — stored but NOT enforced by device
  *   DP 14  (bool)  - window_check: open window detection enabled
  *   DP 15  (enum)  - window_state: closed|open (read-only)
  *   DP 16  (value) - window_temp: window detection temperature drop threshold (°C × 10)
  *   DP 18  (value) - backlight/display_brightness (0–7)
- *   DP 19  (bool)  - factory_reset
+ *   DP 19  (bool)  - factory_reset: not triggerable via Zigbee (device-button or cloud only)
  *   DP 28–34 (raw) - week_program_13_1..7: weekly schedule Mon–Sun (8 timeslots, 33 bytes each)
  *   DP 35  (bitmap)- fault code (read-only)
  *   DP 47  (value) - temp_correction: local temperature calibration (°C × 10, signed, –100…100)
@@ -38,7 +38,8 @@
  *                      24hour = one program applies to all days
  *                      52day  = one program per calendar day (requires Tuya cloud; not usable over Zigbee)
  *                    Not exposed — changing this over Zigbee is error-prone and rarely needed.
- *   DP 113 (bool)  - switch: device on/off
+ *   DP 113 (bool)  - switch: summer mode (true=ON → heating disabled, valve stays closed;
+ *                    frost protection via DP 107 still active as safety net)
  *   DP 114 (value) - override_temp: temporary manual override temperature (°C × 10)
  *   DP 115 (bool)  - overide_en: temporary manual override active
  *
@@ -77,6 +78,7 @@ function scheduleConverter(dayNum) {
             if (!v || v.length < SCHEDULE_BYTES) return undefined;
             const slots = [];
             for (let i = 1; i < SCHEDULE_BYTES; i += 4) {
+                
                 const hh = v[i];
                 const mm = v[i + 1];
                 const temp = ((v[i + 2] << 8) | v[i + 3]) / 10;
@@ -256,6 +258,7 @@ const ar331pro = {
     exposes: [
         e.battery().withUnit("%"),
         e.binary("battery_status", ea.STATE, true, false).withDescription("Battery low warning"),
+        e.binary("preheat", ea.STATE, "ON", "OFF").withDescription("Preheat/boost active (read-only status; use boost_heating to control)"),
         e.child_lock(),
         e
             .climate()
@@ -264,12 +267,13 @@ const ar331pro = {
             .withLocalTemperature(ea.STATE)
             .withLocalTemperatureCalibration(-7, 7, 0.5, ea.STATE_SET)
             .withRunningState(["idle", "heat"], ea.STATE),
-        // Power switch (summer/off mode)
-        e.binary("switch", ea.STATE_SET, "ON", "OFF").withDescription("Turn the device on or off (summer mode)"),
+        // Summer mode: disables heating (valve stays closed). Frost protection (DP107) still active.
+        e.binary("summer_mode", ea.STATE_SET, "ON", "OFF").withDescription("Summer mode: disables heating, valve stays closed. Frost protection temperature (DP107) remains active as safety net."),
         e.enum("heating_cooling_mode", ea.STATE_SET, ["heat", "cool"]).withDescription("Heating or cooling mode - In cooling mode valve is closed, works as temperature and window/door sensor"),
-        // Temperature limits
-        e.numeric("upper_temp", ea.STATE_SET).withUnit("°C").withDescription("Upper temperature limit").withValueMin(28).withValueMax(40).withValueStep(0.5),
-        e.numeric("lower_temp", ea.STATE_SET).withUnit("°C").withDescription("Lower temperature limit").withValueMin(5).withValueMax(20).withValueStep(0.5),
+        // Temperature limits (DP9/DP10) — device stores these values but does NOT enforce them;
+        // the setpoint can still be set to the full 5–40°C range regardless. Not exposed.
+        // e.numeric("upper_temp", ea.STATE_SET)...
+        // e.numeric("lower_temp", ea.STATE_SET)...
         // Stored per-preset temperatures
         e.eco_temperature().withValueMin(5).withValueMax(20).withValueStep(0.5),
         e.comfort_temperature().withValueMin(5).withValueMax(40).withValueStep(0.5),
@@ -289,7 +293,8 @@ const ar331pro = {
         // Valve state
         e.binary("valve_state", ea.STATE, "open", "close").withDescription("Current valve state (read-only)"),
         // Fault code
-        e.numeric("fault_code", ea.STATE).withDescription("Raw fault code bitmap"),
+        e.numeric("fault_code", ea.STATE).withDescription("Fault code bitmap (bit 0: program_fault, bit 1: low_battery, bit 2: sensor_fault)"),
+        // DP19 factory_reset: not triggerable via Zigbee DP — omitted
         // Display
         e.enum("screen_orientation", ea.STATE_SET, ["up", "right", "down", "left"]).withDescription("Display orientation"),
         e.numeric("display_brightness", ea.STATE_SET).withDescription("Display brightness (1–7)").withValueMin(1).withValueMax(7).withValueStep(1),
@@ -302,18 +307,22 @@ const ar331pro = {
     ],
     meta: {
         tuyaDatapoints: [
+            [1, "preheat", tuya.valueConverter.onOff],
             [2, "preset", makePresetConverter({auto: tuya.enum(0), manual: tuya.enum(1), holiday: tuya.enum(2), eco: tuya.enum(3), comfort: tuya.enum(4), standby: tuya.enum(5)})],
-            [3, "running_state", tuya.valueConverterBasic.lookup({idle: tuya.enum(0), heat: tuya.enum(1)})],
+            // work_state range: ["opened","closed"] → index 0 = opened = heating, index 1 = closed = idle
+            [3, "running_state", tuya.valueConverterBasic.lookup({heat: tuya.enum(0), idle: tuya.enum(1)})],
             [4, "current_heating_setpoint", setpointConverter],
             [5, "local_temperature", {from: (v) => (v > 32767 ? v - 65536 : v) / 10}],
             [6, "battery", tuya.valueConverter.raw],
             [7, "child_lock", tuya.valueConverterBasic.lookup({LOCK: false, UNLOCK: true})],
-            [9, "upper_temp", tuya.valueConverter.divideBy10],
-            [10, "lower_temp", tuya.valueConverter.divideBy10],
+            // DP9/DP10: stored by device but not enforced — not mapped
+            // [9, "upper_temp", tuya.valueConverter.divideBy10],
+            // [10, "lower_temp", tuya.valueConverter.divideBy10],
             [14, "window_detection", tuya.valueConverter.onOff],
             [15, "window_open", tuya.valueConverterBasic.lookup({open: tuya.enum(0), closed: tuya.enum(1)})],
             [16, "window_temp", tuya.valueConverter.divideBy10],
             [18, "display_brightness", tuya.valueConverter.raw],
+            // DP19 factory_reset: not triggerable via Zigbee DP — not mapped
             [35, "fault_code", tuya.valueConverter.raw],
             [47, "local_temperature_calibration", localTempCalibrationConverter],
             [49, "valve_state", tuya.valueConverterBasic.lookup({open: tuya.enum(0), close: tuya.enum(1)})],
@@ -333,7 +342,7 @@ const ar331pro = {
             // DP 111: screen orientation in degrees (plain uint32, NOT Tuya enum)
             [111, "screen_orientation", tuya.valueConverterBasic.lookup({up: 0, right: 90, down: 180, left: 270})],
             // DP 112 pro_mode intentionally not mapped — see header comment.
-            [113, "switch", tuya.valueConverter.onOff],
+            [113, "summer_mode", tuya.valueConverter.onOff],
             // DP 114: device echoes the value twice — first as uint32 BE (datatype=2), then as
             // 2-byte little-endian raw buffer (datatype=0). Values below 0°C arrive as signed
             // int16 underflow (e.g. knob turned below minimum → 0xFFD3 = -4.5°C).
