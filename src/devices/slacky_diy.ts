@@ -1497,35 +1497,42 @@ export const definitions: DefinitionWithExtend[] = [
         description: "Electricity Meter via optical port",
         extend: [
             m.deviceAddCustomCluster("seMetering", {
+                name: "seMetering",
                 ID: 0x0702,
                 attributes: {
                     deviceModel: {
+                        name: "deviceModel",
                         ID: attrElCityMeterModelPreset,
                         type: 0x30,
                         write: true,
                         max: 0xff,
                     },
                     deviceAddress: {
+                        name: "deviceAddress",
                         ID: attrElCityMeterAddressPreset,
                         type: 0x23,
                         write: true,
                         max: 0xffffffff,
                     },
                     readPeriod: {
+                        name: "readPeriod",
                         ID: attrElCityMeterMeasurementPreset,
                         type: 0x20,
                         write: true,
                         max: 0xff,
                     },
                     dateRelease: {
+                        name: "dateRelease",
                         ID: attrElCityMeterDateRelease,
                         type: 0x41,
                     },
                     deviceName: {
+                        name: "deviceName",
                         ID: attrElCityMeterModelName,
                         type: 0x41,
                     },
                     devicePassword: {
+                        name: "devicePassword",
                         ID: attrElCityMeterPasswordPreset,
                         write: true,
                         type: 0x41,
@@ -1565,35 +1572,42 @@ export const definitions: DefinitionWithExtend[] = [
         description: "Three phase Electricity Meter via optical port",
         extend: [
             m.deviceAddCustomCluster("seMetering", {
+                name: "seMetering",
                 ID: 0x0702,
                 attributes: {
                     deviceModel: {
+                        name: "deviceModel",
                         ID: attrElCityMeterModelPreset,
                         type: 0x30,
                         write: true,
                         max: 0xff,
                     },
                     deviceAddress: {
+                        name: "deviceAddress",
                         ID: attrElCityMeterAddressPreset,
                         type: 0x23,
                         write: true,
                         max: 0xffffffff,
                     },
                     readPeriod: {
+                        name: "readPeriod",
                         ID: attrElCityMeterMeasurementPreset,
                         type: 0x20,
                         write: true,
                         max: 0xff,
                     },
                     dateRelease: {
+                        name: "dateRelease",
                         ID: attrElCityMeterDateRelease,
                         type: 0x41,
                     },
                     deviceName: {
+                        name: "deviceName",
                         ID: attrElCityMeterModelName,
                         type: 0x41,
                     },
                     devicePassword: {
+                        name: "devicePassword",
                         ID: attrElCityMeterPasswordPreset,
                         write: true,
                         type: 0x41,
@@ -1632,15 +1646,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -1697,15 +1714,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -1788,15 +1808,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -1889,15 +1912,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -1989,15 +2015,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2073,15 +2102,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2150,15 +2182,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2242,15 +2277,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2314,15 +2352,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2425,15 +2466,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2505,15 +2549,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2578,15 +2625,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -2686,15 +2736,18 @@ export const definitions: DefinitionWithExtend[] = [
         configure: configureCommon,
         extend: [
             m.deviceAddCustomCluster("hvacThermostat", {
+                name: "hvacThermostat",
                 ID: 0x0201,
                 attributes: {
                     localTemperatureCalibration: {
+                        name: "localTemperatureCalibration",
                         ID: 0x0010,
                         type: 0x28,
                         write: true,
                         max: 0xff,
                     },
                     minSetpointDeadBand: {
+                        name: "minSetpointDeadBand",
                         ID: 0x0019,
                         type: 0x28,
                         write: true,
@@ -3232,10 +3285,12 @@ export const definitions: DefinitionWithExtend[] = [
                 acFrequency: {divisor: 100},
             }),
             m.deviceAddCustomCluster("seMetering", {
+                name: "seMetering",
                 ID: 0x0702,
                 attributes: {},
                 commands: {
                     resetEnergyMeters: {
+                        name: "resetEnergyMeters",
                         ID: 0x80,
                         parameters: [],
                     },
@@ -3351,10 +3406,12 @@ export const definitions: DefinitionWithExtend[] = [
                 acFrequency: {divisor: 100},
             }),
             m.deviceAddCustomCluster("seMetering", {
+                name: "seMetering",
                 ID: 0x0702,
                 attributes: {},
                 commands: {
                     resetEnergyMeters: {
+                        name: "resetEnergyMeters",
                         ID: 0x80,
                         parameters: [],
                     },
@@ -3438,21 +3495,25 @@ export const definitions: DefinitionWithExtend[] = [
         description: "Tuya switch module 1 gang with custom firmware",
         extend: [
             m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
                 ID: 0x0007,
                 attributes: {
                     customSwitchType: {
+                        name: "customSwitchType",
                         ID: attrSwitchType,
                         type: 0x30,
                         write: true,
                         max: 0xff,
                     },
                     customRelayControl: {
+                        name: "customRelayControl",
                         ID: attrSwitchDecoupled,
                         type: 0x30,
                         write: true,
                         max: 0xff,
                     },
                     customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
                         ID: attrDeviceModelNumber,
                         type: 0x30,
                         write: true,
@@ -3499,33 +3560,39 @@ export const definitions: DefinitionWithExtend[] = [
         toZigbee: [tzLocal.device_model_number],
         extend: [
             m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
                 ID: 0x0007,
                 attributes: {
                     customDelayOn: {
+                        name: "customDelayOn",
                         ID: attrDoorDelayOn,
                         type: 0x20,
                         write: true,
                         max: 0xff,
                     },
                     customDelayOff: {
+                        name: "customDelayOff",
                         ID: attrDoorDelayOff,
                         type: 0x20,
                         write: true,
                         max: 0xff,
                     },
                     customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
                         ID: attrDeviceModelNumber,
                         type: 0x30,
                         write: true,
                         max: 0xff,
                     },
                     customOnCmdOff: {
+                        name: "customOnCmdOff",
                         ID: attrDoorOnCmdOff,
                         type: 0x10,
                         write: true,
                         max: 0x01,
                     },
                     customOffCmdOff: {
+                        name: "customOffCmdOff",
                         ID: attrDoorOffCmdOff,
                         type: 0x10,
                         write: true,
@@ -3595,21 +3662,28 @@ export const definitions: DefinitionWithExtend[] = [
         ota: true,
     },
     {
-        zigbeeModel: ["TS0044-z-SlD"],
-        model: "TS0044-z-SlD",
+        fingerprint: [
+            {modelID: "TS0041-M001-SlD", manufacturerName: "Slacky-DIY"},
+            {modelID: "TS0041-M002-SlD", manufacturerName: "Slacky-DIY"},
+        ],
+        model: "TS0041-M001-SlD",
         vendor: "Slacky-DIY",
-        description: "Tuya wireless switch with 4 buttons with custom firmware",
+        description: "Tuya wireless switch with 1 buttons with custom firmware",
+        whiteLabel: [{model: "TS0041-M002-SlD", fingerprint: [{modelID: "TS0041-M002-SlD"}]}],
         extend: [
             m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
                 ID: 0x0007,
                 attributes: {
                     customSwitchType: {
+                        name: "customSwitchType",
                         ID: attrSwitchType,
                         type: 0x30,
                         write: true,
                         max: 0xff,
                     },
                     customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
                         ID: attrDeviceModelNumber,
                         type: 0x30,
                         write: true,
@@ -3620,15 +3694,420 @@ export const definitions: DefinitionWithExtend[] = [
                 commandsResponse: {},
             }),
             m.deviceAddCustomCluster("genScenes", {
+                name: "genScenes",
                 ID: 0x0005,
                 attributes: {
                     customSceneId: {
+                        name: "customSceneId",
                         ID: attrSceneId,
                         type: 0x20,
                         write: true,
                         max: 0xff,
                     },
                     customGroupId: {
+                        name: "customGroupId",
+                        ID: attrGroupId,
+                        type: 0x21,
+                        write: true,
+                        max: 0xffff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceEndpoints({endpoints: {"1": 1}}),
+            m.battery({
+                percentageReportingConfig: {min: 3600, max: 14400, change: 0},
+            }),
+            m.commandsOnOff({endpointNames: ["1"]}),
+            localActionExtend({
+                endpointNames: ["1"],
+                reporting: false,
+            }),
+            m.commandsLevelCtrl({endpointNames: ["1"]}),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "1",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "1",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level: 3,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.commandsScenes({endpointNames: ["1"]}),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "scene_id",
+                access: "ALL",
+                endpointNames: ["1"],
+                cluster: "genScenes",
+                attribute: "customSceneId",
+                reporting: false,
+                valueMin: 0,
+                valueMax: 255,
+                description: "Scene ID",
+            }),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "group_id",
+                access: "ALL",
+                endpointNames: ["1"],
+                cluster: "genScenes",
+                attribute: "customGroupId",
+                reporting: false,
+                valueMin: 0,
+                valueMax: 65527,
+                description: "Group ID for scenes",
+            }),
+        ],
+        meta: {},
+        ota: true,
+    },
+    {
+        fingerprint: [
+            {modelID: "TS0042-z-SlD", manufacturerName: "Slacky-DIY"},
+            {modelID: "TS0042-M003-SlD", manufacturerName: "Slacky-DIY"},
+        ],
+        model: "TS0042-z-SlD",
+        vendor: "Slacky-DIY",
+        description: "Tuya wireless switch with 2 buttons with custom firmware",
+        whiteLabel: [{model: "TS0042-M003-SlD", fingerprint: [{modelID: "TS0042-M003-SlD"}]}],
+        extend: [
+            m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
+                ID: 0x0007,
+                attributes: {
+                    customSwitchType: {
+                        name: "customSwitchType",
+                        ID: attrSwitchType,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
+                        ID: attrDeviceModelNumber,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceAddCustomCluster("genScenes", {
+                name: "genScenes",
+                ID: 0x0005,
+                attributes: {
+                    customSceneId: {
+                        name: "customSceneId",
+                        ID: attrSceneId,
+                        type: 0x20,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customGroupId: {
+                        name: "customGroupId",
+                        ID: attrGroupId,
+                        type: 0x21,
+                        write: true,
+                        max: 0xffff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceEndpoints({endpoints: {"1": 1, "2": 2}}),
+            m.battery({
+                percentageReportingConfig: {min: 3600, max: 14400, change: 0},
+            }),
+            m.commandsOnOff({endpointNames: ["1", "2"]}),
+            localActionExtend({
+                endpointNames: ["1", "2"],
+                reporting: false,
+            }),
+            m.commandsLevelCtrl({endpointNames: ["1", "2"]}),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "1",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "2",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "1",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "2",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.commandsScenes({endpointNames: ["1", "2"]}),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "scene_id",
+                endpointNames: ["1", "2"],
+                access: "ALL",
+                cluster: "genScenes",
+                attribute: "customSceneId",
+                valueMin: 0,
+                valueMax: 255,
+                description: "Scene ID",
+            }),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "group_id",
+                endpointNames: ["1", "2"],
+                access: "ALL",
+                cluster: "genScenes",
+                attribute: "customGroupId",
+                valueMin: 0,
+                valueMax: 65527,
+                description: "Group ID for scenes",
+            }),
+        ],
+        meta: {},
+        ota: true,
+    },
+    {
+        zigbeeModel: ["TS0043-z-SlD"],
+        model: "TS0043-z-SlD",
+        vendor: "Slacky-DIY",
+        description: "Tuya wireless switch with 3 buttons with custom firmware",
+        extend: [
+            m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
+                ID: 0x0007,
+                attributes: {
+                    customSwitchType: {
+                        name: "customSwitchType",
+                        ID: attrSwitchType,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
+                        ID: attrDeviceModelNumber,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceAddCustomCluster("genScenes", {
+                name: "genScenes",
+                ID: 0x0005,
+                attributes: {
+                    customSceneId: {
+                        name: "customSceneId",
+                        ID: attrSceneId,
+                        type: 0x20,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customGroupId: {
+                        name: "customGroupId",
+                        ID: attrGroupId,
+                        type: 0x21,
+                        write: true,
+                        max: 0xffff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceEndpoints({endpoints: {"1": 1, "2": 2, "3": 3}}),
+            m.battery({
+                percentageReportingConfig: {min: 3600, max: 14400, change: 0},
+            }),
+            m.commandsOnOff({endpointNames: ["1", "2", "3"]}),
+            localActionExtend({
+                endpointNames: ["1", "2", "3"],
+                reporting: false,
+            }),
+            m.commandsLevelCtrl({endpointNames: ["1", "2", "3"]}),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "1",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "2",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "3",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "1",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "2",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "3",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.commandsScenes({endpointNames: ["1", "2", "3"]}),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "scene_id",
+                endpointNames: ["1", "2", "3"],
+                access: "ALL",
+                cluster: "genScenes",
+                attribute: "customSceneId",
+                valueMin: 0,
+                valueMax: 255,
+                description: "Scene ID",
+            }),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "group_id",
+                endpointNames: ["1", "2", "3"],
+                access: "ALL",
+                cluster: "genScenes",
+                attribute: "customGroupId",
+                valueMin: 0,
+                valueMax: 65527,
+                description: "Group ID for scenes",
+            }),
+        ],
+        meta: {},
+        ota: true,
+    },
+    {
+        fingerprint: [
+            {modelID: "TS0044-z-SlD", manufacturerName: "Slacky-DIY"},
+            {modelID: "TS0044-M004-SlD", manufacturerName: "Slacky-DIY"},
+        ],
+        model: "TS0044-z-SlD",
+        vendor: "Slacky-DIY",
+        description: "Tuya wireless switch with 4 buttons with custom firmware",
+        whiteLabel: [{model: "TS0044-M004-SlD", fingerprint: [{modelID: "TS0044-M004-SlD"}]}],
+        extend: [
+            m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
+                ID: 0x0007,
+                attributes: {
+                    customSwitchType: {
+                        name: "customSwitchType",
+                        ID: attrSwitchType,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
+                        ID: attrDeviceModelNumber,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceAddCustomCluster("genScenes", {
+                name: "genScenes",
+                ID: 0x0005,
+                attributes: {
+                    customSceneId: {
+                        name: "customSceneId",
+                        ID: attrSceneId,
+                        type: 0x20,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customGroupId: {
+                        name: "customGroupId",
                         ID: attrGroupId,
                         type: 0x21,
                         write: true,
@@ -3754,6 +4233,229 @@ export const definitions: DefinitionWithExtend[] = [
             m.numeric<"genScenes", SlackyDiyScene>({
                 name: "group_id",
                 endpointNames: ["1", "2", "3", "4"],
+                access: "ALL",
+                cluster: "genScenes",
+                attribute: "customGroupId",
+                valueMin: 0,
+                valueMax: 65527,
+                description: "Group ID for scenes",
+            }),
+        ],
+        meta: {},
+        ota: true,
+    },
+    {
+        zigbeeModel: ["TS0046-z-SlD"],
+        model: "TS0046-z-SlD",
+        vendor: "Slacky-DIY",
+        description: "Tuya wireless switch with 6 buttons with custom firmware",
+        extend: [
+            m.deviceAddCustomCluster("genOnOffSwitchCfg", {
+                name: "genOnOffSwitchCfg",
+                ID: 0x0007,
+                attributes: {
+                    customSwitchType: {
+                        name: "customSwitchType",
+                        ID: attrSwitchType,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customDeviceModelNumber: {
+                        name: "customDeviceModelNumber",
+                        ID: attrDeviceModelNumber,
+                        type: 0x30,
+                        write: true,
+                        max: 0xff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceAddCustomCluster("genScenes", {
+                name: "genScenes",
+                ID: 0x0005,
+                attributes: {
+                    customSceneId: {
+                        name: "customSceneId",
+                        ID: attrSceneId,
+                        type: 0x20,
+                        write: true,
+                        max: 0xff,
+                    },
+                    customGroupId: {
+                        name: "customGroupId",
+                        ID: attrGroupId,
+                        type: 0x21,
+                        write: true,
+                        max: 0xffff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
+            m.deviceEndpoints({endpoints: {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6}}),
+            m.battery({
+                percentageReportingConfig: {min: 3600, max: 14400, change: 0},
+            }),
+            m.commandsOnOff({endpointNames: ["1", "2", "3", "4", "5", "6"]}),
+            localActionExtend({
+                endpointNames: ["1", "2", "3", "4", "5", "6"],
+                reporting: false,
+            }),
+            m.commandsLevelCtrl({endpointNames: ["1", "2", "3", "4", "5", "6"]}),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "1",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "2",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "3",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "4",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "5",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup({
+                name: "switch_actions",
+                endpointName: "6",
+                lookup: {off: 0, on: 1, toggle: 2},
+                cluster: "genOnOffSwitchCfg",
+                attribute: "switchActions",
+                description: "Actions switch",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "1",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "2",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "3",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "4",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "5",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.enumLookup<"genOnOffSwitchCfg", SlackyDiyOnOffCfg>({
+                name: "switch_type",
+                endpointName: "6",
+                lookup: {
+                    toggle: 0,
+                    momentary: 1,
+                    multifunction: 2,
+                    brightness_level_up: 3,
+                    brightness_level_down: 4,
+                    scene: 5,
+                },
+                cluster: "genOnOffSwitchCfg",
+                attribute: "customSwitchType",
+                description: "Switch type",
+            }),
+            m.commandsScenes({endpointNames: ["1", "2", "3", "4", "5", "6"]}),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "scene_id",
+                endpointNames: ["1", "2", "3", "4", "5", "6"],
+                access: "ALL",
+                cluster: "genScenes",
+                attribute: "customSceneId",
+                valueMin: 0,
+                valueMax: 255,
+                description: "Scene ID",
+            }),
+            m.numeric<"genScenes", SlackyDiyScene>({
+                name: "group_id",
+                endpointNames: ["1", "2", "3", "4", "5", "6"],
                 access: "ALL",
                 cluster: "genScenes",
                 attribute: "customGroupId",

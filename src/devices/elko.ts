@@ -10,15 +10,15 @@ import {assertString, precisionRound} from "../lib/utils";
 const e = exposes.presets;
 const ea = exposes.access;
 
-interface ElkoThermostatCluster {
+export interface ElkoThermostatCluster {
     attributes: {
         elkoLoad: number;
-        elkoDisplayText: number;
+        elkoDisplayText: string;
         elkoSensor: number;
         elkoRegulatorTime: number;
         elkoRegulatorMode: number;
         elkoPowerStatus: number;
-        elkoDateTime: number;
+        elkoDateTime: Buffer;
         elkoMeanPower: number;
         elkoExternalTemp: number;
         elkoNightSwitching: number;
@@ -26,7 +26,7 @@ interface ElkoThermostatCluster {
         elkoChildLock: number;
         elkoMaxFloorTemp: number;
         elkoRelayState: number;
-        elkoVersion: number;
+        elkoVersion: Buffer;
         elkoCalibration: number;
         elkoLastMessageId: number;
         elkoLastMessageStatus: number;
@@ -38,26 +38,27 @@ interface ElkoThermostatCluster {
 const elkoExtend = {
     addElkoToHvacThermostatCluster: () =>
         m.deviceAddCustomCluster("hvacThermostat", {
+            name: "hvacThermostat",
             ID: Zcl.Clusters.hvacThermostat.ID,
             attributes: {
-                elkoLoad: {ID: 0x0401, type: Zcl.DataType.UINT16, write: true, max: 0xffff},
-                elkoDisplayText: {ID: 0x0402, type: Zcl.DataType.CHAR_STR, write: true},
-                elkoSensor: {ID: 0x0403, type: Zcl.DataType.ENUM8, write: true, max: 0xff},
-                elkoRegulatorTime: {ID: 0x0404, type: Zcl.DataType.UINT8, write: true, max: 0xff},
-                elkoRegulatorMode: {ID: 0x0405, type: Zcl.DataType.BOOLEAN, write: true},
-                elkoPowerStatus: {ID: 0x0406, type: Zcl.DataType.BOOLEAN, write: true},
-                elkoDateTime: {ID: 0x0407, type: Zcl.DataType.OCTET_STR, write: true},
-                elkoMeanPower: {ID: 0x0408, type: Zcl.DataType.UINT16, write: true, max: 0xffff},
-                elkoExternalTemp: {ID: 0x0409, type: Zcl.DataType.INT16, write: true, min: -32768, max: 32767},
-                elkoNightSwitching: {ID: 0x0411, type: Zcl.DataType.BOOLEAN, write: true},
-                elkoFrostGuard: {ID: 0x0412, type: Zcl.DataType.BOOLEAN, write: true},
-                elkoChildLock: {ID: 0x0413, type: Zcl.DataType.BOOLEAN, write: true},
-                elkoMaxFloorTemp: {ID: 0x0414, type: Zcl.DataType.UINT8, write: true, max: 0xff},
-                elkoRelayState: {ID: 0x0415, type: Zcl.DataType.BOOLEAN, write: true},
-                elkoVersion: {ID: 0x0416, type: Zcl.DataType.OCTET_STR, write: true},
-                elkoCalibration: {ID: 0x0417, type: Zcl.DataType.INT8, write: true, min: -128, max: 127},
-                elkoLastMessageId: {ID: 0x0418, type: Zcl.DataType.UINT8, write: true, max: 0xff},
-                elkoLastMessageStatus: {ID: 0x0419, type: Zcl.DataType.UINT8, write: true, max: 0xff},
+                elkoLoad: {name: "elkoLoad", ID: 0x0401, type: Zcl.DataType.UINT16, write: true, max: 0xffff},
+                elkoDisplayText: {name: "elkoDisplayText", ID: 0x0402, type: Zcl.DataType.CHAR_STR, write: true},
+                elkoSensor: {name: "elkoSensor", ID: 0x0403, type: Zcl.DataType.ENUM8, write: true, max: 0xff},
+                elkoRegulatorTime: {name: "elkoRegulatorTime", ID: 0x0404, type: Zcl.DataType.UINT8, write: true, max: 0xff},
+                elkoRegulatorMode: {name: "elkoRegulatorMode", ID: 0x0405, type: Zcl.DataType.BOOLEAN, write: true},
+                elkoPowerStatus: {name: "elkoPowerStatus", ID: 0x0406, type: Zcl.DataType.BOOLEAN, write: true},
+                elkoDateTime: {name: "elkoDateTime", ID: 0x0407, type: Zcl.DataType.OCTET_STR, write: true},
+                elkoMeanPower: {name: "elkoMeanPower", ID: 0x0408, type: Zcl.DataType.UINT16, write: true, max: 0xffff},
+                elkoExternalTemp: {name: "elkoExternalTemp", ID: 0x0409, type: Zcl.DataType.INT16, write: true, min: -32768, max: 32767},
+                elkoNightSwitching: {name: "elkoNightSwitching", ID: 0x0411, type: Zcl.DataType.BOOLEAN, write: true},
+                elkoFrostGuard: {name: "elkoFrostGuard", ID: 0x0412, type: Zcl.DataType.BOOLEAN, write: true},
+                elkoChildLock: {name: "elkoChildLock", ID: 0x0413, type: Zcl.DataType.BOOLEAN, write: true},
+                elkoMaxFloorTemp: {name: "elkoMaxFloorTemp", ID: 0x0414, type: Zcl.DataType.UINT8, write: true, max: 0xff},
+                elkoRelayState: {name: "elkoRelayState", ID: 0x0415, type: Zcl.DataType.BOOLEAN, write: true},
+                elkoVersion: {name: "elkoVersion", ID: 0x0416, type: Zcl.DataType.OCTET_STR, write: true},
+                elkoCalibration: {name: "elkoCalibration", ID: 0x0417, type: Zcl.DataType.INT8, write: true, min: -128, max: 127},
+                elkoLastMessageId: {name: "elkoLastMessageId", ID: 0x0418, type: Zcl.DataType.UINT8, write: true, max: 0xff},
+                elkoLastMessageStatus: {name: "elkoLastMessageStatus", ID: 0x0419, type: Zcl.DataType.UINT8, write: true, max: 0xff},
             },
             commands: {},
             commandsResponse: {},
@@ -117,11 +118,11 @@ const elkoExtend = {
             key: ["system_mode", "local_temperature_calibration"],
             convertSet: async (entity, key, value, meta) => {
                 if (key === "system_mode") {
-                    await entity.write("hvacThermostat", {elkoPowerStatus: value === "heat" ? 1 : 0});
+                    await entity.write<"hvacThermostat", ElkoThermostatCluster>("hvacThermostat", {elkoPowerStatus: value === "heat" ? 1 : 0});
                     return {state: {[key]: value}};
                 }
                 if (key === "local_temperature_calibration") {
-                    await entity.write("hvacThermostat", {elkoCalibration: Math.round(Number(value) * 10)});
+                    await entity.write<"hvacThermostat", ElkoThermostatCluster>("hvacThermostat", {elkoCalibration: Math.round(Number(value) * 10)});
                     return {state: {[key]: value}};
                 }
             },
@@ -289,10 +290,7 @@ export const definitions: DefinitionWithExtend[] = [
                 valueOn: ["on", 1],
                 valueOff: ["off", 0],
             }),
+            m.forcePowerSource({powerSource: "Mains (single phase)"}),
         ],
-        configure: (device, coordinatorEndpoint) => {
-            device.powerSource = "Mains (single phase)";
-            device.save();
-        },
     },
 ];

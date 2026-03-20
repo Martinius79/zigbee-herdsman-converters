@@ -83,35 +83,38 @@ interface LegrandDevicesCluster2 {
 export const legrandExtend = {
     addLegrandDevicesCluster: () =>
         m.deviceAddCustomCluster("manuSpecificLegrandDevices", {
+            name: "manuSpecificLegrandDevices",
             ID: 0xfc01,
             manufacturerCode: Zcl.ManufacturerCode.LEGRAND_GROUP,
             attributes: {
-                deviceMode: {ID: 0x0000, type: Zcl.DataType.DATA16},
-                ledInDark: {ID: 0x0001, type: Zcl.DataType.BOOLEAN},
-                ledIfOn: {ID: 0x0002, type: Zcl.DataType.BOOLEAN},
+                deviceMode: {name: "deviceMode", ID: 0x0000, type: Zcl.DataType.DATA16, write: true},
+                ledInDark: {name: "ledInDark", ID: 0x0001, type: Zcl.DataType.BOOLEAN, write: true},
+                ledIfOn: {name: "ledIfOn", ID: 0x0002, type: Zcl.DataType.BOOLEAN, write: true},
             },
             commands: {},
             commandsResponse: {},
         }),
     addLegrandDevices2Cluster: () =>
         m.deviceAddCustomCluster("manuSpecificLegrandDevices2", {
+            name: "manuSpecificLegrandDevices2",
             ID: 0xfc40,
             manufacturerCode: Zcl.ManufacturerCode.LEGRAND_GROUP,
             attributes: {
-                pilotWireMode: {ID: 0x0000, type: Zcl.DataType.ENUM8},
+                pilotWireMode: {name: "pilotWireMode", ID: 0x0000, type: Zcl.DataType.ENUM8},
             },
             commands: {
-                command0: {ID: 0x00, parameters: [{name: "data", type: Zcl.BuffaloZclDataType.BUFFER}]},
+                command0: {name: "command0", ID: 0x00, parameters: [{name: "data", type: Zcl.BuffaloZclDataType.BUFFER}]},
             },
             commandsResponse: {},
         }),
     addLegrandDevices3Cluster: () =>
         m.deviceAddCustomCluster("manuSpecificLegrandDevices3", {
+            name: "manuSpecificLegrandDevices3",
             ID: 0xfc41,
             manufacturerCode: Zcl.ManufacturerCode.LEGRAND_GROUP,
             attributes: {},
             commands: {
-                command0: {ID: 0x00, parameters: [{name: "data", type: Zcl.BuffaloZclDataType.BUFFER}]},
+                command0: {name: "command0", ID: 0x00, parameters: [{name: "data", type: Zcl.BuffaloZclDataType.BUFFER}]},
             },
             commandsResponse: {},
         }),
@@ -180,7 +183,11 @@ export const tzLegrand = {
         convertSet: async (entity, key, value, meta) => {
             const mode = utils.getFromLookup(value, {off: 0x00, auto: 0x02, on_override: 0x03});
             const payload = {data: Buffer.from([mode])};
-            await entity.command("manuSpecificLegrandDevices3", "command0", payload);
+            await entity.command<"manuSpecificLegrandDevices3", "command0", LegrandDevicesCluster2>(
+                "manuSpecificLegrandDevices3",
+                "command0",
+                payload,
+            );
             return {state: {auto_mode: value}};
         },
     } satisfies Tz.Converter,
@@ -267,7 +274,11 @@ export const tzLegrand = {
             };
             utils.validateValue(value, Object.keys(modeLookup));
             const payload = {data: Buffer.from([utils.getFromLookup(value, modeLookup)])};
-            await entity.command("manuSpecificLegrandDevices2", "command0", payload);
+            await entity.command<"manuSpecificLegrandDevices2", "command0", LegrandDevicesCluster2>(
+                "manuSpecificLegrandDevices2",
+                "command0",
+                payload,
+            );
             return {state: {pilot_wire_mode: value}};
         },
         convertGet: async (entity, key, meta) => {

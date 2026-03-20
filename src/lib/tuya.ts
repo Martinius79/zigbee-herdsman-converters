@@ -540,6 +540,7 @@ const tuyaExposes = {
         return x;
     },
 };
+
 export {tuyaExposes as exposes};
 
 export const skip = {
@@ -599,6 +600,7 @@ class Base {
 
 export class Enum extends Base {}
 const enumConstructor = (value: number) => new Enum(value);
+
 export {enumConstructor as enum};
 
 export const BacklightColorEnum = {
@@ -2101,6 +2103,7 @@ const tuyaTz = {
         },
     } satisfies Tz.Converter,
 };
+
 export {tuyaTz as tz};
 
 const tuyaFz = {
@@ -2371,6 +2374,7 @@ const tuyaFz = {
         },
     } satisfies Fz.Converter<"haElectricalMeasurement", undefined, ["attributeReport", "readResponse"]>,
 };
+
 export {tuyaFz as fz};
 
 export function getHandlersForDP(
@@ -3456,27 +3460,32 @@ const tuyaModernExtend = {
         return result;
     },
 };
+
 export {tuyaModernExtend as modernExtend};
 
 const tuyaClusters = {
     addTuyaCommonPrivateCluster: (): ModernExtend =>
         modernExtend.deviceAddCustomCluster("manuSpecificTuya4", {
+            name: "manuSpecificTuya4",
             ID: 0xe000,
             attributes: {
-                random_timing: {ID: 0xd001, type: Zcl.DataType.CHAR_STR, write: true},
-                cycle_timing: {ID: 0xd002, type: Zcl.DataType.CHAR_STR, write: true},
-                inching: {ID: 0xd003, type: Zcl.DataType.CHAR_STR, write: true},
+                random_timing: {name: "random_timing", ID: 0xd001, type: Zcl.DataType.CHAR_STR, write: true},
+                cycle_timing: {name: "cycle_timing", ID: 0xd002, type: Zcl.DataType.CHAR_STR, write: true},
+                inching: {name: "inching", ID: 0xd003, type: Zcl.DataType.CHAR_STR, write: true},
             },
             commands: {
                 setRandomTiming: {
+                    name: "setRandomTiming",
                     ID: 0xf7,
                     parameters: [{name: "payload", type: Zcl.BuffaloZclDataType.BUFFER}],
                 },
                 setCycleTiming: {
+                    name: "setCycleTiming",
                     ID: 0xf8,
                     parameters: [{name: "payload", type: Zcl.BuffaloZclDataType.BUFFER}],
                 },
                 setInchingSwitch: {
+                    name: "setInchingSwitch",
                     ID: 0xfb,
                     parameters: [{name: "payload", type: Zcl.BuffaloZclDataType.BUFFER}],
                 },
